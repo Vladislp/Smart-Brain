@@ -12,8 +12,11 @@ Ability to detect multiple faces in a single image
 ## Technologies Used
 
 React.js for the frontend
+
 Node.js and Express.js for the backend
+
 Clarifai API for facial recognition
+
 PostgreSQL for the database
 
 ## Installation

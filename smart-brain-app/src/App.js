@@ -47,7 +47,7 @@ class App extends Component {
   }
   
   callClarifaiApi = () => {
-    const PAT = '41e1940cac9e45a2ae29e33ebc006442';
+    const PAT = '';
     const USER_ID = 'ximaks';       
     const APP_ID = 'Smart-Brain-App';
     const MODEL_ID = 'face-detection';

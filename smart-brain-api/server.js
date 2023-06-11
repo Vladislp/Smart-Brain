@@ -18,7 +18,6 @@ const database = {
         {
             id: '123',
             name: 'John',
-            password: 'cookies',
             email: 'john@gmail.com',
             entries: 0,
             joined: new Date()
@@ -26,7 +25,6 @@ const database = {
         {
             id: '124',
             name: 'Sally',
-            password: 'bananas',
             email: 'Sally@gmail.com',
             entries: 0,
             joined: new Date()
@@ -56,24 +54,23 @@ app.get('/', (req, res) => {
 */
 app.post('/signin', (req, res) => {
     // Load hash from your password DB.
-    /*
     bcrypt.compare("apples", '$2b$10$2gxIU2tdSR.XefHz2ydXIe6gnWA8MKBihOrgCuxKhZybeMoehELw.', function(err, result) {
         console.log('first guess', res)
     });
     bcrypt.compare("veggies", '$2b$10$2gxIU2tdSR.XefHz2ydXIe6gnWA8MKBihOrgCuxKhZybeMoehELw.', function(err, result) {
         console.log('second guess', res)
     });
-    */
+    /*
     console.log(req.body)
     console.log(req.body.email === database.users[0].email)
     console.log(req.body.password === database.users[0].password)
     console.log(req.body.email === database.users[0].email && 
         req.body.password === database.users[0].password)
+    */
     // Compare the entered email and password with the existing user's credentials
     if(req.body.email === database.users[0].email && 
        req.body.password === database.users[0].password) {
-        console.log("wtf")
-        res.status(200).json('success');
+        res.json(database.users[0]);
     } else {
         res.status(400).json('error logging in')
     }
@@ -120,16 +117,19 @@ app.put('/image', (req, res) => {
     const { id } = req.body;
     let found = false;
     database.users.forEach(user => {
-        if(user.id === id) {
-            found = true;
-            user.entries++
+        if (user.id === id) {
+            found = true; 
+            user.entries++;
             return res.json(user.entries);
-        } 
-    })
+        }
+    });
+
     if (!found) {
-        res.status(400).json('not found');
+        return res.status(400).json('not found');
     }
 });
+
+  
 
 // Start the server
 app.listen(3001, () => {

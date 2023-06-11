@@ -19,9 +19,27 @@ class App extends Component {
       imageUrl: '',
       box: {},
       route: 'signin',
-      isSignedIn: false
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
     }
   }
+
+  loadUser = (data) => {
+    this.setState({ user: {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data,
+    }})
+  }
+  
 
   calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box
@@ -51,7 +69,7 @@ class App extends Component {
   }
   
   callClarifaiApi = () => {
-    const PAT = '';
+    const PAT = '41e1940cac9e45a2ae29e33ebc006442';
     const USER_ID = 'ximaks';       
     const APP_ID = 'Smart-Brain-App';
     const MODEL_ID = 'face-detection';
@@ -88,7 +106,20 @@ class App extends Component {
         return response.json();
       })
       .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
-      .then(result => {
+      .then(response => {
+        if(response) {
+          fetch('http://localhost:3001/image', {
+            method: 'put',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              id: this.state.user.id
+            })
+          })
+            .then(response => response.json())
+            .then(userEntryCount => {
+              this.setState(Object.assign(this.state.user, {entries: userEntryCount}))
+            })
+        }
       })
       .catch(error => console.log('error', error));
   }
@@ -111,7 +142,7 @@ class App extends Component {
         { route === 'home'
           ? <div>
           <Logo />
-          <Rank />
+          <Rank userEntryCount={this.state.user.entries} />
           <ImageLinkForm 
             onInputChange={this.onInputChange} 
             onButtonSubmit={this.onButtonSubmit} 
@@ -121,7 +152,7 @@ class App extends Component {
           : (
             route === 'signin' 
             ? <Signin onRouteChange={this.onRouteChange} />
-            : <Register onRouteChange={this.onRouteChange} />
+            : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
           )
 
         }
